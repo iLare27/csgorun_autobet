@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.util.Scanner;
 
 
 public class Main {
-
     public static boolean doesURLExist(URL url) throws IOException
     {
         // We want to check the current URL
@@ -38,7 +38,8 @@ public class Main {
         System.setProperty("webdriver.gecko.driver","selenium\\geckodriver.exe");
 
         FirefoxOptions options = new FirefoxOptions();
-        String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36 OPR/60.0.3255.170";
+        String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
+//        String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0";
         options.addPreference("general.useragent.override", userAgent);
 
         WebDriver driver = new FirefoxDriver(options);
@@ -50,20 +51,9 @@ public class Main {
         int gameAmount = sc.nextInt();
         sc.close();
 
-
         ArrayList<Double> crashList = new ArrayList<>();
         Double crash;
         String JsonUrl = "";
-
-//        for (int i = 1; i < 3; i++) {
-//            JsonUrl = "https://api.csgorun.ru/games/" + (gameNum - i);
-//            URL url_ar = new URL(JsonUrl);
-//            ReadJSON reader_ar = new ReadJSON();
-//            JSONObject json_ar = reader_ar.readJsonFromUrl(JsonUrl);  // Get 2 previous crashes
-//            JSONObject dataJson_ar = json_ar.getJSONObject("data");
-//            crashList.add(Double.valueOf(dataJson_ar.optString("crash")));
-//            Thread.sleep(1000);
-//        }
 
         for (int i = 0; i <= gameAmount; i++) {
             JsonUrl = "https://api.csgorun.ru/games/" + (gameNum + i);
@@ -86,6 +76,7 @@ public class Main {
 
             if (i > 1 && crashList.get(i) < 1.20 && crashList.get(i-1) < 1.20 && crashList.get(i-2) < 1.20) { // добавить условие i == (минимальное значение для проверки)
                 System.out.println("Triple crash, staking...");
+                Thread.sleep(5000);
                 driver.findElement(By.xpath("/html/body/div/div[1]/div[2]/div[1]/div[2]/div[3]/div[2]/div/button[1]")).click(); // select item
                 Thread.sleep(1000);
                 driver.findElement(By.xpath("/html/body/div/div[1]/div[2]/div[2]/div[1]/div[2]/div/div[4]/div/button")).click(); // stake
@@ -96,6 +87,7 @@ public class Main {
         }
 
         driver.quit();
+
     }
 }
 
